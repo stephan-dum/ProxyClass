@@ -2,7 +2,7 @@
 	
 A seemless way for organizing multi inheritance.
 	
-> Caution this function uses ES6 [Proxies](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy), [Sets](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set) and [Symbols](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/hasInstance)
+> Caution this function uses ES6 [Proxies](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy), [Sets](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set) and [Symbols](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/hasInstance). Use [Ring.js](http://ringjs.neoname.eu/) or similar libaries, if you want an ES5 approach.
 	
 ## Dependancies
 - [ScopeChain](https://github.com/stephan-dum/scopeChain)
@@ -12,9 +12,9 @@ A seemless way for organizing multi inheritance.
 - Use `instanceof` on multi classes
 
 ## Downside of this approach
-To achive a seamless use of `instanceof` all subclass[Symbols.hasInstance], execpt Object, will be overwritten for every new multiclass.
+To achive a seamless use of `instanceof` all `Subclass[Symbols.hasInstance]`, execpt `Object`, will be overwritten for every new multiclass.
 
-Try to avoid multiclasses and instanceof as much as possible, the native `instanceof` operation is already quite expensive and overwriting `[Symbol.hasInstance]` makes it even worse!
+Javascript is simply not designed for this, try to avoid multiclasses and `instanceof` as much as possible, the native `instanceof` operation is already quite expensive and overwriting `[Symbol.hasInstance]` makes it even worse!
 
 ## Examples
 
