@@ -42,22 +42,6 @@ class E extends ProxyInheritance(C, D) {
     get isE() { return true; }
 };
 
-var e = new E();
-
-e instanceof A,
-e instanceof B,
-e instanceof C,
-e instanceof D,
-e instanceof E,
-
-e.isA,
-e.isB,
-e.isC,
-e.isD,
-e.isE,
-e.aProp,
-e.dProp,
-
 //You can also inline your class
 
 var F = ProxyInheritance(class {
@@ -71,12 +55,29 @@ var F = ProxyInheritance(class {
 }, E);
 
 
+var e = new E();
+
+//all of this will return true
+e instanceof A;
+e instanceof B;
+e instanceof C;
+e instanceof D;
+e instanceof E;
+
+e.isA;
+e.isB;
+e.isC;
+e.isD;
+e.isE;
+e.aProp;
+e.dProp;
+
 var f = new F("fubar");
 
-//same as above plus
-f instanceof F,
-f.isF,
-f.fProp,
-f.someArg == "fubar"
+//same as e plus 
+f instanceof F;
+f.isF;
+f.fProp;
+f.someArg == "fubar";
 
 ```
