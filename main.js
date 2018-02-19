@@ -27,7 +27,9 @@ function ProxyInheritance(...mixins) {
 		}
 		
 		for(var proto = value.prototype; proto ;proto = Object.getPrototypeOf(proto)) {
-			delegators.add(proto.constructor);
+			if(proto.constructor != Object) {
+				delegators.add(proto.constructor);
+			}
 		}
 	});
 	
@@ -42,7 +44,6 @@ function ProxyInheritance(...mixins) {
 					if(this == delegator) {
 						return (
 							BaseClass.prototype.isPrototypeOf(instance)
-							//(instance instanceof BaseClass)
 							|| oldInstanceOf.call(delegator, instance)
 						);
 					} else {
