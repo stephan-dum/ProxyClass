@@ -10,7 +10,12 @@ A seemless way for organizing multi inheritance.
 ## Key Features
 - Reflects all changes to the prototypes even after mixin took place
 - Use `instanceof` on multi classes
-	
+
+## Downside of this approach
+To achive a seamless use of `instanceof` all subclass[Symbols.hasInstance], execpt Object, will be overwritten for every new multiclass.
+
+Try to avoid multiclasses and instanceof as much as possible, the native `instanceof` operation is already quite expensive and overwriting `[Symbol.hasInstance]` makes it even worse!
+
 ## Examples
 
 ```javascript
@@ -37,7 +42,7 @@ class E extends ProxyInheritance(C, D) {
     constructor() {
         super();
 
-        this.dProp = true;
+        this.eProp = true;
     }
     get isE() { return true; }
 };
@@ -58,6 +63,7 @@ var F = ProxyInheritance(class {
 var e = new E();
 
 //all of this will return true
+e instanceof Object;
 e instanceof A;
 e instanceof B;
 e instanceof C;
@@ -70,7 +76,7 @@ e.isC;
 e.isD;
 e.isE;
 e.aProp;
-e.dProp;
+e.eProp;
 
 var f = new F("fubar");
 
