@@ -1,7 +1,7 @@
 function ProxyInheritance(...mixins) {
-	function base(...args) {
+	function BaseClass(...args) {
 		mixins.forEach(function(mixin) {
-			var source = Reflect.construct(mixin, args, base);
+			var source = Reflect.construct(mixin, args, BaseClass);
 			
 			Reflect.ownKeys(source).forEach(function(property) {
 				Object.defineProperty(
@@ -13,13 +13,19 @@ function ProxyInheritance(...mixins) {
 		}, this);
 	}
 	
-	base.prototype = ScopeChain({}, ...mixins.map(function(mixin) {
+	BaseClass.prototype = ScopeChain({}, ...mixins.map(function(mixin) {
 		return mixin.prototype;
 	}));
 	
-	const delegators = new Set();
+	var delegators = new Set();
 		
-	[base].concat(mixins).forEach(function(value) {
+	[BaseClass].concat(mixins).forEach(function(value) {
+		if(value.delegators) {
+			value.delegators.forEach(function(delegator) {
+				delegators.add(delegator);
+			});
+		}
+		
 		for(var proto = value.prototype; proto ;proto = Object.getPrototypeOf(proto)) {
 			delegators.add(proto.constructor);
 		}
@@ -35,7 +41,8 @@ function ProxyInheritance(...mixins) {
 				value : function(instance) {
 					if(this == delegator) {
 						return (
-							base.prototype.isPrototypeOf(instance)
+							BaseClass.prototype.isPrototypeOf(instance)
+							//(instance instanceof BaseClass)
 							|| oldInstanceOf.call(delegator, instance)
 						);
 					} else {
@@ -46,5 +53,7 @@ function ProxyInheritance(...mixins) {
 		);
 	});
 	
-	return base;
+	BaseClass.delegators = delegators;
+	
+	return BaseClass;
 }
