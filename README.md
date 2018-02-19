@@ -8,13 +8,13 @@ A seemless way for organizing multi inheritance.
 - [ScopeChain](https://github.com/stephan-dum/scopeChain)
 	
 ## Key Features
-- Reflects all changes to the prototypes even after mixin took place
+- Reflects all changes to `prototype` even after mixin
 - Use `instanceof` on multi classes
 
 ## Downside of this approach
 To achive a seamless use of `instanceof` all `Subclass[Symbols.hasInstance]`, execpt `Object`, will be overwritten for every new multiclass.
 
-Javascript is simply not designed for this, try to avoid multiclasses and `instanceof` as much as possible, the native `instanceof` operation is already quite expensive and overwriting `[Symbol.hasInstance]` makes it even worse!
+Try to avoid multiclasses and `instanceof` as much as possible, the native `instanceof` operation is already quite expensive and overwriting `[Symbol.hasInstance]` makes it even worse!
 
 ## Examples
 
@@ -87,3 +87,9 @@ f.fProp;
 f.someArg == "fubar";
 
 ```
+
+## Licence
+
+Public Domain
+
+NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
