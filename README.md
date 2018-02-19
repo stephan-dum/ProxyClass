@@ -11,35 +11,35 @@ A seemless way for organizing multi inheritance.
 - Reflects all changes to the prototypes even after mixin took place
 - Use `instanceof` on multi classes
 	
-## Usage
+## Examples
 
 ```javascript
 class A {
-	constructor() {
-		this.aProp = true
-	}
-	get isA() {
-		return true;
-	}
+    constructor() {
+        this.aProp = true
+    }
+    get isA() {
+        return true;
+    }
 }
 
 class B { get isB() { return true; } }
 
 class C extends ProxyInheritance(A, B) {
-	get isC() { return true; }
+    get isC() { return true; }
 }
 
 class D {
-	get isD() { return true; }
+    get isD() { return true; }
 }
 
 class E extends ProxyInheritance(C, D) {
-	constructor() {
-		super();
-		
-		this.dProp = true;
-	}
-	get isE() { return true; }
+    constructor() {
+        super();
+
+        this.dProp = true;
+    }
+    get isE() { return true; }
 };
 
 var e = new E();
@@ -61,13 +61,13 @@ e.dProp,
 //You can also inline your class
 
 var F = ProxyInheritance(class {
-	constructor(someArg) {
-		this.someArg = someArg;
-		this.fProp = true;
-	}
-	get isF() {
-		return true;
-	}
+    constructor(someArg) {
+        this.someArg = someArg;
+        this.fProp = true;
+    }
+    get isF() {
+        return true;
+    }
 }, E);
 
 
