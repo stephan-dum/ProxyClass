@@ -1,0 +1,23 @@
+{
+  "name": "ProxyClass",
+  "version": "1.0.0",
+  "description": "A seemless way for organizing multi inheritance.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stephan-dum/ProxyInheritance.git"
+  },
+  "keywords": ["inheritance", "extend", "instanceof", "proxy", "es6"],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stephan-dum/ProxyInheritance/issues"
+  },
+  "homepage": "https://github.com/stephan-dum/ProxyInheritance#readme",
+  "dependencies": {
+    "proxyscope": "^1.0.1"
+  }
+}

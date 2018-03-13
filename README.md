@@ -1,20 +1,18 @@
-# ProxyInheritance
+# ProxyClass
 	
-A seemless way for organizing multi inheritance.
+A seemless way to organize multi inheritance.
 	
 > Caution this function uses ES6 [Proxies](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy), [Sets](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set) and [Symbols](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/hasInstance). Use [Ring.js](http://ringjs.neoname.eu/) or similar libaries, if you want an ES5 approach.
 	
 ## Dependancies
-- [ScopeChain](https://github.com/stephan-dum/scopeChain)
+- [ProxyScope](https://github.com/stephan-dum/proxyscope)
 	
-## Key Features
-- Reflects all changes to `prototype` even after mixin
-- Use `instanceof` on multi classes
+## ProxyClass(`...mixins`)
+Uses a ProxyScope as `prototype` to reflects all changes to `prototype` of all `mixin`.
 
-## Downside of this approach
-To achive a seamless use of `instanceof` all `Subclass[Symbols.hasInstance]`, execpt `Object`, will be overwritten for every new multiclass.
-
-Try to avoid multiclasses and `instanceof` as much as possible, the native `instanceof` operation is already quite expensive and overwriting `[Symbol.hasInstance]` makes it even worse!
+## ProxyClass.hasInstance(`...mixins`)
+Allows the use of `instanceof` by overwriting all `Subclass[Symbols.hasInstance]`.
+**Caution**: this will make instanceof more expensive.
 
 ## Examples
 
@@ -30,7 +28,7 @@ class A {
 
 class B { get isB() { return true; } }
 
-class C extends ProxyInheritance(A, B) {
+class C extends ProxyClass(A, B) {
     get isC() { return true; }
 }
 
@@ -38,7 +36,7 @@ class D {
     get isD() { return true; }
 }
 
-class E extends ProxyInheritance(C, D) {
+class E extends ProxyClass.hasInstance(C, D) {
     constructor() {
         super();
 
@@ -49,7 +47,7 @@ class E extends ProxyInheritance(C, D) {
 
 //You can also inline your class
 
-var F = ProxyInheritance(class {
+var F = ProxyClass.hasInstance(class {
     constructor(someArg) {
         this.someArg = someArg;
         this.fProp = true;

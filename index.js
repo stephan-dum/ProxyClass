@@ -1,4 +1,6 @@
-function ProxyInheritance(...mixins) {
+import ProxyScope from "node_modules/proxyscope/index.js";
+
+export default function ProxyClass(...mixins) {
 	function BaseClass(...args) {
 		mixins.forEach(function(mixin) {
 			var source = Reflect.construct(mixin, args, BaseClass);
@@ -13,10 +15,18 @@ function ProxyInheritance(...mixins) {
 		}, this);
 	}
 	
-	BaseClass.prototype = ScopeChain({}, ...mixins.map(function(mixin) {
+	BaseClass.prototype = ProxyScope({}, ...mixins.map(function(mixin) {
 		return mixin.prototype;
 	}));
 	
+	return BaseClass;
+}
+
+
+
+ProxyClass.hasInstance = function(...mixins) {
+	var BaseClass = ProxyClass(...mixins);
+
 	var delegators = new Set();
 		
 	[BaseClass].concat(mixins).forEach(function(value) {
@@ -55,6 +65,6 @@ function ProxyInheritance(...mixins) {
 	});
 	
 	BaseClass.delegators = delegators;
-	
+
 	return BaseClass;
 }
