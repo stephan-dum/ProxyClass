@@ -1,23 +1,38 @@
 {
-  "name": "ProxyClass",
-  "version": "1.0.0",
+  "name": "proxyclass",
+  "version": "1.0.1",
   "description": "A seemless way for organizing multi inheritance.",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jasmine",
+    "build": "node ./bin/build.js",
+    "watch": "node ./bin/build.js -w -v"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/stephan-dum/ProxyInheritance.git"
+    "url": "git+https://github.com/stephan-dum/ProxyClass.git"
   },
-  "keywords": ["inheritance", "extend", "instanceof", "proxy", "es6"],
+  "keywords": [
+    "inheritance",
+    "extend",
+    "instanceof",
+    "proxy",
+    "es6"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/stephan-dum/ProxyInheritance/issues"
+    "url": "https://github.com/stephan-dum/ProxyClass/issues"
   },
-  "homepage": "https://github.com/stephan-dum/ProxyInheritance#readme",
+  "homepage": "https://github.com/stephan-dum/ProxyClass#readme",
   "dependencies": {
-    "proxyscope": "^1.0.1"
+    "@aboutweb/proxyscope": "^2.0.0"
+  },
+  "devDependencies": {
+    "chokidar": "^2.0.4",
+    "jasmine": "^3.1.0",
+    "rollup": "^0.67.3",
+    "rollup-plugin-node-resolve": "^3.4.0"
   }
 }

@@ -1,10 +1,10 @@
-import ProxyScope from "node_modules/proxyscope/index.js";
+import { write as ProxyScope } from "@aboutweb/proxyscope";
 
 export default function ProxyClass(...mixins) {
 	function BaseClass(...args) {
 		mixins.forEach(function(mixin) {
 			var source = Reflect.construct(mixin, args, BaseClass);
-			
+
 			Reflect.ownKeys(source).forEach(function(property) {
 				Object.defineProperty(
 					this,
@@ -14,35 +14,30 @@ export default function ProxyClass(...mixins) {
 			}, this);
 		}, this);
 	}
-	
-	BaseClass.prototype = ProxyScope({}, ...mixins.map(function(mixin) {
-		return mixin.prototype;
-	}));
-	
+
+	BaseClass.prototype = ProxyScope([
+		{},
+		...mixins.map((mixin) => mixin.prototype)
+	]);
+
 	return BaseClass;
 }
-
-
 
 ProxyClass.hasInstance = function(...mixins) {
 	var BaseClass = ProxyClass(...mixins);
 
 	var delegators = new Set();
-		
+
 	[BaseClass].concat(mixins).forEach(function(value) {
 		if(value.delegators) {
 			value.delegators.forEach(function(delegator) {
 				delegators.add(delegator);
 			});
 		}
-		
-		for(var proto = value.prototype; proto ;proto = Object.getPrototypeOf(proto)) {
-			if(proto.constructor != Object) {
-				delegators.add(proto.constructor);
-			}
-		}
+
+		delegators.add(value.prototype.constructor);
 	});
-	
+
 	delegators.forEach(function(delegator) {
 		var oldInstanceOf = delegator[Symbol.hasInstance];
 
@@ -63,7 +58,7 @@ ProxyClass.hasInstance = function(...mixins) {
 			}
 		);
 	});
-	
+
 	BaseClass.delegators = delegators;
 
 	return BaseClass;
