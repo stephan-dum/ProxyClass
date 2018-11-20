@@ -26,35 +26,36 @@ const EventEmitter = require('events');
 const listen = ["on", "once"];
 
 class ArrayEmitter extends ProxyClass.hasInstance(Array, EventEmitter) {
- constructor(options) {
-  let { data } = options;
+	constructor(options) {
+		let { data } = options;
 
-	super(...data);
+		super(...data);
 
-	listen.forEach((property) => {
-	 let type = options[property];
+		listen.forEach((property) => {
+			let type = options[property];
 
- 	 if(type) {
-	  for(let event in type) {
-		 let listeners = type[event];
+			if(type) {
+				for(let event in type) {
+					let listeners = type[event];
 
- 		 if(!Array.isArray(listeners)) {
-		  listeners = [listeners];
-		 }
+					if(!Array.isArray(listeners)) {
+						listeners = [listeners];
+					}
 
-		 listeners.forEach((listener) => {
-		  this[property](event, listener)
-		 });
-		}
-	 }
-  });
+					listeners.forEach((listener) => {
+						this[property](event, listener)
+					});
 
-  this.emit("push", data);
- }
- push(...args) {
-  super.push(...args);
-	this.emit("push", args);
- }
+				}
+			}
+		});
+
+		this.emit("push", data);
+	}
+	push(...args) {
+		super.push(...args);
+		this.emit("push", args);
+	}
 }
 
 let input = ["fubar", "haha"];
