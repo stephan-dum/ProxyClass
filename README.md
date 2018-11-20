@@ -1,12 +1,12 @@
 # ProxyClass
-	
+
 A seemless way to organize multi inheritance.
-	
+
 > Caution this function uses ES6 [Proxies](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy), [Sets](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set) and [Symbols](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/hasInstance). Use [Ring.js](http://ringjs.neoname.eu/) or similar libaries, if you want an ES5 approach.
-	
+
 ## Dependancies
 - [ProxyScope](https://github.com/stephan-dum/proxyscope)
-	
+
 ## ProxyClass(`...mixins`)
 Uses a ProxyScope as `prototype` to reflects all changes to `prototype` of all `mixin`.
 
@@ -28,7 +28,7 @@ class A {
 
 class B { get isB() { return true; } }
 
-class C extends ProxyClass(A, B) {
+class C extends ProxyClass.hasInstance(A, B) {
     get isC() { return true; }
 }
 
@@ -78,7 +78,7 @@ e.eProp;
 
 var f = new F("fubar");
 
-//same as e plus 
+//same as e plus
 f instanceof F;
 f.isF;
 f.fProp;
