@@ -13,7 +13,7 @@ You should always prefer other patterns like decorators or annotions if you can,
   * overhead
 
 ## ProxyClass(`...mixins`)
-Uses a ProxyScope as `prototype` to reflects all changes to `prototype` of all `mixin`.
+Uses ProxyScope to reflects all changes to `prototype` of all `mixins`.
 
 ## ProxyClass.hasInstance(`...mixins`)
 Allows the use of `instanceof` by overwriting all `Subclass[Symbols.hasInstance]`.
@@ -89,50 +89,50 @@ na instanceof EventEmitter;
 
 ```javascript
 class A {
-    constructor() {
-        this.aProp = true;
-				this.shared = "sharedA";
-    }
-    get isA() {
-        return true;
-    }
-		get sharedA() {
-			return this.shared;
-		}
-		sharedAFn() {
-			return this.shared;
-		}
+  constructor() {
+    this.aProp = true;
+		this.shared = "sharedA";
+  }
+  get isA() {
+  	return true;
+  }
+	get sharedA() {
+		return this.shared;
+	}
+	sharedAFn() {
+		return this.shared;
+	}
 }
 
 class B { get isB() { return true; } }
 
 class C extends ProxyClass.hasInstance(A, B) {
-    get isC() { return true; }
+  get isC() { return true; }
 }
 
 class D {
-    get isD() { return true; }
+  get isD() { return true; }
 }
 
 class E extends ProxyClass.hasInstance(C, D) {
-    constructor() {
-        super();
+  constructor() {
+      super();
 
-        this.eProp = true;
-    }
-    get isE() { return true; }
+      this.eProp = true;
+  }
+  get isE() { return true; }
 };
 
 //You can also inline your class
 
 var F = ProxyClass.hasInstance(class {
-    constructor(someArg) {
-        this.someArg = someArg;
-        this.fProp = true;
-    }
-    get isF() {
-        return true;
-    }
+  constructor(someArg) {
+      this.someArg = someArg;
+      this.fProp = true;
+  }
+  get isF() {
+      return true;
+  }
 }, E);
 
 
@@ -169,9 +169,9 @@ All class member function will get called with their own isolated context.
 
 ```javascript
 
-	expect(e.shared).toEqual("sharedE");
-	expect(e.sharedA).toEqual("sharedA");
-	expect(e.sharedAFn()).toEqual("sharedA");
+expect(e.shared).toEqual("sharedE");
+expect(e.sharedA).toEqual("sharedA");
+expect(e.sharedAFn()).toEqual("sharedA");
 
 ```
 
