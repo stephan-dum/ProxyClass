@@ -1,6 +1,6 @@
 {
-  "name": "proxyclass",
-  "version": "1.0.1",
+  "name": "@aboutweb/proxyclass",
+  "version": "1.0.0",
   "description": "A seemless way for organizing multi inheritance.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
