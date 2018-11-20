@@ -86,7 +86,6 @@ na instanceof EventEmitter;
 
 Deep Classes
 
-
 ```javascript
 class A {
   constructor() {
