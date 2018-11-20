@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/stephan-dum/ProxyClass#readme",
   "dependencies": {
-    "@aboutweb/proxyscope": "^2.0.0"
+    "@aboutweb/proxyscope": "^2.0.1"
   },
   "devDependencies": {
     "chokidar": "^2.0.4",

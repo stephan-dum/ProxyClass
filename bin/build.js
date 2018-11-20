@@ -53,10 +53,11 @@ process.argv.forEach((raw) => {
 
 const {
   watch = false,
-  verbose = false
+  verbose = false,
+  inspect = false
 } = options;
 
-function test() {
+function tester() {
   return exec(CMD, {
     stdio : "inherit"
   }, function(error, stdout, stderr) {
@@ -66,17 +67,19 @@ function test() {
   }).on("error", console.log);
 };
 
+
 function build() {
   rollup.rollup(config.input).then((output) => {
     if(verbose) {
       console.log("exports", output.exports);
     }
 
-    let queue = config.output.map((outputConfig) => {
-      return output.write(outputConfig)
-    });
-    Promise.all(queue).then((output) => {
-      test();
+    return Promise.all(
+      config.output.map((outputConfig) => {
+        return output.write(outputConfig)
+      })
+    ).then((output) => {
+      tester();
     })
   })
 }
@@ -92,23 +95,23 @@ if(watch) {
     build();
   }
 
-  chokidar.watch(config.input.input, {
+  chokidar.watch("../"+config.input.input, {
     ignored: /node_modules/,
     ignoreInitial : true,
-    cwd : __dirname+"../"
+    cwd : __dirname
   })
     .on("add", change)
     .on("change", change)
     .on("unlink", (fileId) => console.warn("error: removed a dependecy", fileId))
   ;
 
-  chokidar.watch("spec/spec.js", {
+  chokidar.watch("../spec/spec.js", {
     ignoreInitial : true,
     disableGlobbing : true,
     persistent: false,
     ignored: /node_modules/,
-    cwd : __dirname+"../"
-  }).on("change", test);
+    cwd : __dirname
+  }).on("change", tester);
 }
 
 build();

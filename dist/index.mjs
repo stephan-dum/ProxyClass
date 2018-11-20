@@ -9,12 +9,11 @@
 		traps
 			default traps to push to trapChain
 
-	args
-		stack
-			a spread or array of level objects
-		trapChain
-			a spread of traps objects
-			if stack is a spread this will be an empty array
+	@param target
+		a spread or array of level objects
+	@param trapChain
+		a spread of traps objects
+		if target is a spread this will be an empty array
 */
 
 function createProxy(target, ...trapChain) {
@@ -59,7 +58,6 @@ function createProxy(target, ...trapChain) {
 /**
 	Creates factory for generation Proxies
 
-
 	@param { String | String[] } trapChain
 	@param { Object } [target = {}] can be used to extend the later proxy target
 */
@@ -95,7 +93,7 @@ function proxyFactory(trapChain, target = {}) {
 
 const traps = Object.freeze({
 	set(target, property, value) {
-		target.stack[0][property] = value;
+		return target.stack[0][property] = value;
 	},
 	get(target, property) {
 		var host = target.findHost(property);
@@ -231,35 +229,76 @@ const factory$3 = target$2.factory = proxyFactory([traps$3, traps$1, factory$2],
 
 Object.freeze(traps$3);
 
+const isBound = /^bound .*$/i;
+
+const traps$4 = {
+	get(target, property, receiver) {
+		let
+			stack = target.stack,
+			proto = Object.getPrototypeOf(target.proto),
+			desc = (
+				Object.getOwnPropertyDescriptor(proto || {}, property)
+				|| Object.getOwnPropertyDescriptor(proto.prototype || {}, property)
+			)
+		;
+
+		if(desc) {
+			let {
+				value,
+				set,
+				get
+			} = desc;
+
+			let result = value || set || get;
+
+			if(typeof result == "function") {
+				return result.bind(receiver);
+			}
+		}
+
+		for(let i = 0, length = stack.length; i < length; i++) {
+			let level = stack[i];
+			let value = level[property];
+
+			if(value) {
+				if(typeof value == "function" && !isBound.test(value.name)) {
+					return value.bind(level);
+				}
+
+				return value;
+			}
+		}
+
+		return target.proto[property];
+	},
+	getPrototypeOf(target) {
+		return Object.getPrototypeOf(target.proto);
+	}
+};
+
 function ProxyClass(...mixins) {
 	function BaseClass(...args) {
-		mixins.forEach(function(mixin) {
-			var source = Reflect.construct(mixin, args, BaseClass);
-
-			Reflect.ownKeys(source).forEach(function(property) {
-				Object.defineProperty(
-					this,
-					property,
-					Object.getOwnPropertyDescriptor(source, property)
-				);
-			}, this);
-		}, this);
+		return factory({
+			proto : this,
+			stack : [
+				{},
+				...mixins.map((mixin) => new mixin(...args)),
+			]
+		}, traps$4);
 	}
 
-	BaseClass.prototype = factory$1([
-		{},
-		...mixins.map((mixin) => mixin.prototype)
-	]);
+	BaseClass.prototype = factory(
+		mixins.map((mixin) => mixin.prototype)
+	);
 
 	return BaseClass;
 }
 
 ProxyClass.hasInstance = function(...mixins) {
-	var BaseClass = ProxyClass(...mixins);
+	let BaseClass = ProxyClass(...mixins);
+ 	let delegators = new Set([BaseClass]);
 
-	var delegators = new Set();
-
-	[BaseClass].concat(mixins).forEach(function(value) {
+	mixins.forEach(function(value) {
 		if(value.delegators) {
 			value.delegators.forEach(function(delegator) {
 				delegators.add(delegator);

@@ -1,34 +1,78 @@
-import { write as ProxyScope } from "@aboutweb/proxyscope";
+import {
+	read as ProxyRead,
+	write as ProxyWrite
+} from "@aboutweb/proxyscope";
+
+const isBound = /^bound .*$/i;
+
+const traps = {
+	get(target, property, receiver) {
+		let
+			stack = target.stack,
+			proto = Object.getPrototypeOf(target.proto),
+			desc = (
+				Object.getOwnPropertyDescriptor(proto || {}, property)
+				|| Object.getOwnPropertyDescriptor(proto.prototype || {}, property)
+			)
+		;
+
+		if(desc) {
+			let {
+				value,
+				set,
+				get
+			} = desc;
+
+			let result = value || set || get;
+
+			if(typeof result == "function") {
+				return result.bind(receiver);
+			}
+		}
+
+		for(let i = 0, length = stack.length; i < length; i++) {
+			let level = stack[i];
+			let value = level[property];
+
+			if(value) {
+				if(typeof value == "function" && !isBound.test(value.name)) {
+					return value.bind(level);
+				}
+
+				return value;
+			}
+		}
+
+		return target.proto[property];
+	},
+	getPrototypeOf(target) {
+		return Object.getPrototypeOf(target.proto);
+	}
+};
 
 export default function ProxyClass(...mixins) {
 	function BaseClass(...args) {
-		mixins.forEach(function(mixin) {
-			var source = Reflect.construct(mixin, args, BaseClass);
-
-			Reflect.ownKeys(source).forEach(function(property) {
-				Object.defineProperty(
-					this,
-					property,
-					Object.getOwnPropertyDescriptor(source, property)
-				);
-			}, this);
-		}, this);
+		return ProxyRead({
+			proto : this,
+			stack : [
+				{},
+				...mixins.map((mixin) => new mixin(...args)),
+			]
+		}, traps);
 	}
 
-	BaseClass.prototype = ProxyScope([
-		{},
-		...mixins.map((mixin) => mixin.prototype)
-	]);
+	BaseClass.prototype = ProxyRead(
+		mixins.map((mixin) => mixin.prototype)
+	);
 
 	return BaseClass;
 }
 
 ProxyClass.hasInstance = function(...mixins) {
-	var BaseClass = ProxyClass(...mixins);
+	let BaseClass = ProxyClass(...mixins);
+ 	let delegators = new Set([BaseClass]);
 
-	var delegators = new Set();
-
-	[BaseClass].concat(mixins).forEach(function(value) {
+	mixins.forEach(function(value) {
 		if(value.delegators) {
 			value.delegators.forEach(function(delegator) {
 				delegators.add(delegator);
