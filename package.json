@@ -34,10 +34,10 @@
   },
   "homepage": "https://github.com/stephan-dum/proxy-class#readme",
   "dependencies": {
-    "@aboutweb/proxyscope": "^2.0.6"
+    "@aboutweb/proxyscope": "^3.0.1"
   },
   "devDependencies": {
-    "@aboutweb/irrigable-packagejson": "^0.0.6",
+    "@aboutweb/irrigable-packagejson": "0.0.8",
     "jasmine": "^3.1.0"
   }
 }

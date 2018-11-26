@@ -6,64 +6,63 @@
 
 	const isBound = /^bound .*$/i;
 
-	const traps = {
-		get(target, property, receiver) {
-			let
-				stack = target.stack,
-				proto = Object.getPrototypeOf(target.proto),
-				desc = (
-					Object.getOwnPropertyDescriptor(proto || {}, property)
-					|| Object.getOwnPropertyDescriptor(proto.prototype || {}, property)
-				)
-			;
-
-			if(desc) {
-				let {
-					value,
-					set,
-					get
-				} = desc;
-
-				let result = value || set || get;
-
-				if(typeof result == "function") {
-					return result.bind(receiver);
-				}
-			}
-
-			for(let i = 0, length = stack.length; i < length; i++) {
-				let level = stack[i];
-				let value = level[property];
-
-				if(value) {
-					if(typeof value == "function" && !isBound.test(value.name)) {
-						return value.bind(level);
-					}
-
-					return value;
-				}
-			}
-
-			return target.proto[property];
-		},
-		getPrototypeOf(target) {
-			return Object.getPrototypeOf(target.proto);
-		}
-	};
-
 	function ProxyClass(...mixins) {
 		function BaseClass(...args) {
-			return proxyscope.read({
-				proto : this,
-				stack : [
-					{},
-					...mixins.map((mixin) => new mixin(...args)),
-				]
-			}, traps);
+			let instance = {};
+			let stack = mixins.map((mixin) => new mixin(...args));
+			let proto = Object.getPrototypeOf(this);
+
+			let proxy = proxyscope.read(stack, {
+				get(target, property, receiver) {
+					let desc = (
+						Object.getOwnPropertyDescriptor(proto, property)
+						|| Object.getOwnPropertyDescriptor(proto.prototype || {}, property)
+					);
+
+					if(desc) {
+						let {
+							value,
+							set,
+							get
+						} = desc;
+
+						let result = value || set || get;
+
+						if(typeof result == "function") {
+							return result.bind(receiver);
+						}
+					}
+
+					for(let i = 0, length = stack.length; i < length; i++) {
+						let level = stack[i];
+						let value = level[property];
+
+						if(value) {
+							if(typeof value == "function" && !isBound.test(value.name)) {
+								return value.bind(level);
+							}
+
+							return value;
+						}
+					}
+
+					return target[property];
+				},
+				set(target, property, value) {
+					return Reflect.set(instance, property, value);
+				},
+				getPrototypeOf(target) {
+					return proto;
+				}
+			});
+
+			stack.unshift(instance);
+
+			return proxy;
 		}
 
 		BaseClass.prototype = proxyscope.read(
-			mixins.map((mixin) => mixin.prototype)
+			mixins.map((mixin) => Object.create(mixin.prototype))
 		);
 
 		return BaseClass;

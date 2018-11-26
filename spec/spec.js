@@ -127,6 +127,7 @@ describe("ProxyClass", function() {
         super.push(...args);
         this.emit("push", args);
       }
+      static get [Symbol.species]() { return Array; }
     }
 
     let input = ["fubar", "haha"];
@@ -138,6 +139,7 @@ describe("ProxyClass", function() {
     ae.push("last");
     input.push("last");
 
+    expect(Array.isArray(ae)).toBeTruthy();
     expect(ae instanceof ArrayEmitter).toBeTruthy();
     expect(ae instanceof Array).toBeTruthy();
     expect(ae instanceof EventEmitter).toBeTruthy();
