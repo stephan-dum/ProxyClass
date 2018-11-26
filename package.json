@@ -6,7 +6,7 @@
       "@aboutweb/proxyscope": "proxyScope"
     }
   },
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "A seemless way for organizing multi inheritance.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
