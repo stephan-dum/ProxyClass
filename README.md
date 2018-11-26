@@ -1,4 +1,4 @@
-# ProxyClass
+# proxy-class
 
 A seemless way to organize multi inheritance.
 
@@ -29,7 +29,7 @@ class ArrayEmitter extends ProxyClass.hasInstance(Array, EventEmitter) {
 	constructor(options) {
 		let { data } = options;
 
-		super(...data); 
+		super(...data);
 
 		listen.forEach((property) => {
 			let type = options[property];

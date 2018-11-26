@@ -1,6 +1,5 @@
 import {
-	read as ProxyRead,
-	write as ProxyWrite
+	read as ProxyRead
 } from "@aboutweb/proxyscope";
 
 const isBound = /^bound .*$/i;
